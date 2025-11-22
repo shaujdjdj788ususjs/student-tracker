@@ -1,0 +1,4 @@
+com\example\studytracker\service\ResourceService.class
+com\example\studytracker\model\Resource.class
+com\example\studytracker\StudytrackerApplication.class
+com\example\studytracker\repository\ResourceRepository.class

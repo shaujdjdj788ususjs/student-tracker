@@ -1,0 +1,200 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(120deg, #f0f4ff, #e6f7ff);
+  color: #111;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: #4a90e2;
+  color: #fff;
+}
+
+.top h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.inline-form input {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.inline-form button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background: #fff;
+  color: #4a90e2;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.inline-form button:hover {
+  background: #e0f0ff;
+}
+
+.boards {
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.board {
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  width: 300px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-top: 6px solid #4a90e2;
+  transition: transform 0.2s;
+}
+
+.board:hover {
+  transform: translateY(-3px);
+}
+
+.board-header {
+  margin-bottom: 10px;
+}
+
+.progress-bar {
+  background: #e0e0e0;
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 5px 0;
+}
+
+.progress-fill {
+  background: #4a90e2;
+  width: 0%;
+  height: 100%;
+  transition: width 0.3s;
+}
+
+.add-resource-btn {
+  padding: 4px 8px;
+  border: none;
+  background: #50e3c2;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 8px;
+  transition: background 0.3s;
+}
+
+.add-resource-btn:hover {
+  background: #3ac9a8;
+}
+
+.resource-card {
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border-left: 4px solid #4a90e2;
+}
+
+.resource-card.video {
+  border-left-color: #f5a623;
+}
+
+.resource-card.reading {
+  border-left-color: #50e3c2;
+}
+
+.resource-card.practice {
+  border-left-color: #9013fe;
+}
+
+.resource-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+}
+
+select, button {
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.delete-resource {
+  background: #ff5a5f;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.delete-resource:hover {
+  background: #e04848;
+}
+
+.modal {
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background: rgba(0,0,0,0.5);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index: 10;
+}
+
+.modal.hidden {
+  display:none;
+}
+
+.modal-inner {
+  background:#fff;
+  padding:25px;
+  border-radius:12px;
+  width:320px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.modal-inner h3 {
+  margin-top: 0;
+  color: #4a90e2;
+}
+
+.modal-actions button {
+  margin-right: 10px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.modal-actions button[type="submit"] {
+  background: #50e3c2;
+  color: #fff;
+}
+
+.modal-actions button[type="submit"]:hover {
+  background: #3ac9a8;
+}
+
+.modal-actions button#cancelRes {
+  background: #ff5a5f;
+  color: #fff;
+}
+
+.modal-actions button#cancelRes:hover {
+  background: #e04848;
+}

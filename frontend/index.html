@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Boards</title>
+  <style>
+    /* ----- BODY & HEADER ----- */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(120deg, #f0f4ff, #e6f7ff);
+      color: #111;
+    }
+    header.top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: #4a90e2;
+      color: #fff;  
+    }
+    header.top h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    form.inline-form input {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    form.inline-form button {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: none;
+      background: #fff;
+      color: #4a90e2;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    form.inline-form button:hover { background: #e0f0ff; }
+
+    /* ----- BOARDS ----- */
+    main.boards {
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    section.board {
+      background: #fff;
+      border-top: 6px solid #4a90e2;
+      border-radius: 12px;
+      padding: 15px;
+      width: 300px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: transform 0.2s;
+    }
+    section.board:hover { transform: translateY(-3px); }
+    .board-header h2 { color: #4a90e2; margin: 0; }
+    .board-meta {
+      display: flex;
+      align-items: center;
+      margin-top: 5px;
+    }
+    .progress-text { color: #333; font-weight: bold; margin-right: 5px; }
+    .progress-bar {
+      background: #e0e0e0;
+      border-radius: 5px;
+      height: 10px;
+      width: 100%;
+      overflow: hidden;
+      margin-right: 5px;
+    }
+    .progress-fill {
+      background: #4a90e2;
+      width: 0%;
+      height: 100%;
+      transition: width 0.3s;
+    }
+    .add-resource-btn {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: none;
+      background: #50e3c2;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .add-resource-btn:hover { background: #3ac9a8; }
+
+    /* ----- RESOURCES ----- */
+    .resources { margin-top: 10px; }
+    article.resource-card {
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border-left: 4px solid #4a90e2;
+    }
+    article.resource-card.video { border-left-color: #f5a623; }
+    article.resource-card.reading { border-left-color: #50e3c2; }
+    article.resource-card.practice { border-left-color: #9013fe; }
+    .resource-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+    }
+    .resource-details select, .resource-details button {
+      padding: 4px 6px;
+      border-radius: 6px;
+    }
+    .delete-resource {
+      background: #ff5a5f;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .delete-resource:hover { background: #e04848; }
+
+    /* ----- MODAL ----- */
+    .modal {
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.5);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      z-index:10;
+    }
+    .modal.hidden { display:none; }
+    .modal-inner {
+      background:#fff;
+      padding:25px;
+      border-radius:12px;
+      width:320px;
+      box-shadow:0 8px 20px rgba(0,0,0,0.2);
+    }
+    .modal-inner h3 { margin-top:0; color:#4a90e2; }
+    .modal-actions button {
+      margin-right: 10px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition:0.3s;
+    }
+    .modal-actions button[type="submit"] { background: #50e3c2; color:#fff; }
+    .modal-actions button[type="submit"]:hover { background: #3ac9a8; }
+    .modal-actions button#cancelRes { background:#ff5a5f; color:#fff; }
+    .modal-actions button#cancelRes:hover { background:#e04848; }
+
+    a.resource-title { text-decoration: none; color:#333; font-weight:bold; }
+    a.resource-title:hover { color:#4a90e2; }
+  </style>
+</head>
+<body>
+
+  <header class="top">
+    <h1>Study Boards</h1>
+    <form id="addBoardForm" class="inline-form">
+      <input id="boardName" placeholder="New board (course/topic)" required />
+      <button type="submit">Add Board</button>
+    </form>
+  </header>
+
+  <main id="boardsContainer" class="boards"></main>
+
+  <!-- Board Template -->
+  <template id="board-template">
+    <section class="board">
+      <div class="board-header">
+        <h2 class="board-title"></h2>
+        <div class="board-meta">
+          <span class="progress-text">0%</span>
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+          <button class="add-resource-btn">+ Add</button>
+        </div>
+      </div>
+      <div class="resources"></div>
+    </section>
+  </template>
+
+  <!-- Resource Template -->
+  <template id="resource-template">
+    <article class="resource-card">
+      <a class="resource-title" target="_blank" rel="noopener"></a>
+      <div class="resource-details">
+        <span class="type"></span>
+        <select class="status-select">
+          <option>To Do</option>
+          <option>In Progress</option>
+          <option>Completed</option>
+        </select>
+        <button class="delete-resource">✕</button>
+      </div>
+    </article>
+  </template>
+
+  <!-- Resource Form Modal -->
+  <div id="resourceFormModal" class="modal hidden">
+    <div class="modal-inner">
+      <h3>Add Resource</h3>
+      <form id="resourceForm">
+        <input id="resTitle" placeholder="Title" required />
+        <input id="resUrl" placeholder="https://..." required />
+        <select id="resType">
+          <option value="video">Video</option>
+          <option value="reading">Reading</option>
+          <option value="practice">Practice Problem</option>
+        </select>
+        <select id="resStatus">
+          <option>To Do</option>
+          <option>In Progress</option>
+          <option>Completed</option>
+        </select>
+        <div class="modal-actions">
+          <button type="submit">Add</button>
+          <button type="button" id="cancelRes">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const boardsContainer = document.getElementById('boardsContainer');
+    const addBoardForm = document.getElementById('addBoardForm');
+    const boardTemplate = document.getElementById('board-template');
+    const resourceTemplate = document.getElementById('resource-template');
+    const resourceFormModal = document.getElementById('resourceFormModal');
+    const resourceForm = document.getElementById('resourceForm');
+    const cancelResBtn = document.getElementById('cancelRes');
+    let currentBoard = null;
+
+    // Add Board
+    addBoardForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('boardName').value.trim();
+      if(!name) return;
+      const clone = boardTemplate.content.cloneNode(true);
+      const boardEl = clone.querySelector('.board');
+      boardEl.querySelector('.board-title').textContent = name;
+      boardsContainer.appendChild(boardEl);
+
+      const addBtn = boardEl.querySelector('.add-resource-btn');
+      addBtn.addEventListener('click', () => {
+        currentBoard = boardEl;
+        resourceFormModal.classList.remove('hidden');
+      });
+      addBoardForm.reset();
+    });
+
+    // Cancel Resource
+    cancelResBtn.addEventListener('click', () => {
+      resourceFormModal.classList.add('hidden');
+      resourceForm.reset();
+    });
+
+    // Add Resource
+    resourceForm.addEventListener('submit', e => {
+      e.preventDefault();
+      if(!currentBoard) return;
+      const title = document.getElementById('resTitle').value.trim();
+      const url = document.getElementById('resUrl').value.trim();
+      const type = document.getElementById('resType').value;
+      const status = document.getElementById('resStatus').value;
+
+      const clone = resourceTemplate.content.cloneNode(true);
+      const resourceEl = clone.querySelector('.resource-card');
+      resourceEl.querySelector('.resource-title').textContent = title;
+      resourceEl.querySelector('.resource-title').href = url;
+      resourceEl.querySelector('.type').textContent = type;
+      resourceEl.querySelector('.status-select').value = status;
+      resourceEl.classList.add(type);
+
+      // Delete Resource
+      resourceEl.querySelector('.delete-resource').addEventListener('click', () => {
+        resourceEl.remove();
+        updateProgress(currentBoard);
+      });
+
+      // Update progress on status change
+      resourceEl.querySelector('.status-select').addEventListener('change', () => {
+        updateProgress(currentBoard);
+      });
+
+      currentBoard.querySelector('.resources').appendChild(resourceEl);
+      updateProgress(currentBoard);
+      resourceFormModal.classList.add('hidden');
+      resourceForm.reset();
+    });
+
+    // Update Progress
+    function updateProgress(boardEl){
+      const resources = boardEl.querySelectorAll('.resource-card');
+      const progressText = boardEl.querySelector('.progress-text');
+      const progressFill = boardEl.querySelector('.progress-fill');
+      if(resources.length===0){
+        progressText.textContent='0%';
+        progressFill.style.width='0%';
+        return;
+      }
+      let completed = 0;
+      resources.forEach(r=>{ if(r.querySelector('.status-select').value==='Completed') completed++; });
+      const percent = Math.round((completed/resources.length)*100);
+      progressText.textContent = percent + '%';
+      progressFill.style.width = percent+'%';
+    }
+  </script>
+</body>
+</html>
